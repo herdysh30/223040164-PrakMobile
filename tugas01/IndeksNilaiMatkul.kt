@@ -20,18 +20,20 @@ class IndeksNilaiMatkul {
     }
 }
 
-fun main() {
+fun main(args: Array<String>) {
     val indeks = IndeksNilaiMatkul()
 
-    val nilai1: Int? = 77
-    println("1. Nilai: $nilai1 -> ${indeks.IndeksNilai(nilai1)}")
-
-    val nilai2: Int? = 110
-    println("2. Nilai: $nilai2 -> ${indeks.IndeksNilai(nilai2)}")
-
-    val nilai3: Int? = null
-    println("3. Nilai: $nilai3 -> ${indeks.IndeksNilai(nilai3)}")
-
-    val nilai4: Int? = 25
-    println("4. Nilai: $nilai4 -> ${indeks.IndeksNilai(nilai4)}")
+    if (args.isNotEmpty()) {
+        for (i in args.indices) {
+            val nilai = args[i].toIntOrNull()
+            val result = if (nilai != null) {
+                indeks.IndeksNilai(nilai)
+            } else {
+                "Nilai harus diisi"
+            }
+            println("${i + 1} ${args[i]} $result")
+        }
+    } else {
+        println("Masukkan nilai-nilai sebagai program argument.")
+    }
 }
