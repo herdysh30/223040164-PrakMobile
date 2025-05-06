@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import com.benasher44.uuid.uuid4
 import com.example.mynote.models.Note
@@ -31,10 +32,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NoteScreen(modifier: Modifier) {
-    val context = LocalContext.current
-    val dao = NoteDatabase.getDatabase(context).noteDao()
-    val list: LiveData<List<Note>> = dao.getAllNotes()
-    val notes: List<Note> by list.observeAsState(initial = listOf())
+    val viewModel = hiltViewModel<NoteViewModel>()
+    val notes: List<Note> by viewModel.list.observeAsState(initial = listOf())
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -55,7 +54,7 @@ fun NoteScreen(modifier: Modifier) {
             confirmButton = {
                 Button(onClick = {
                     scope.launch {
-                        dao.deleteNote(noteToDelete!!)
+                        viewModel.deleteNote(noteToDelete!!)
                         if (editingNote?.id == noteToDelete!!.id) {
                             title = ""
                             description = ""
@@ -96,28 +95,28 @@ fun NoteScreen(modifier: Modifier) {
         )
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            onClick = {
-                if (title.isNotEmpty() && description.isNotEmpty()) {
-                    scope.launch {
-                        if (editingNote != null) {
-                            // UPDATE
-                            val updated = editingNote!!.copy(title = title, description = description)
-                            dao.updateNote(updated)
-                            editingNote = null
-                        } else {
-                            // INSERT
-                            dao.insertNote(Note(uuid4().toString(), title, description))
-                        }
-                        title = ""
-                        description = ""
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (editingNote != null) "Update Note" else "Save Note")
-        }
+//        Button(
+//            onClick = {
+//                if (title.isNotEmpty() && description.isNotEmpty()) {
+//                    scope.launch {
+//                        if (editingNote != null) {
+//                            // UPDATE
+//                            val updated = editingNote!!.copy(title = title, description = description)
+//                            viewModel.updateNote(updated)
+//                            editingNote = null
+//                        } else {
+//                            // INSERT
+//                            viewModel.insertNote(Note(uuid4().toString(), title, description))
+//                        }
+//                        title = ""
+//                        description = ""
+//                    }
+//                }
+//            },
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text(if (editingNote != null) "Update Note" else "Save Note")
+//        }
 
         Spacer(Modifier.height(16.dp))
 
