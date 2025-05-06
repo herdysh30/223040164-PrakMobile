@@ -26,10 +26,10 @@ class NoteViewModel @Inject constructor(private val noteDao: NoteDao) : ViewMode
         }
     }
 
-//    fun updateNote(note: Note) {
-//        viewModelScope.launch {
-//            noteDao.updateNote(note)
-//        }
-//    }
+    fun updateNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.updateNote(note)
+        }
+    }
 
 }

@@ -95,28 +95,28 @@ fun NoteScreen(modifier: Modifier) {
         )
         Spacer(Modifier.height(8.dp))
 
-//        Button(
-//            onClick = {
-//                if (title.isNotEmpty() && description.isNotEmpty()) {
-//                    scope.launch {
-//                        if (editingNote != null) {
-//                            // UPDATE
-//                            val updated = editingNote!!.copy(title = title, description = description)
-//                            viewModel.updateNote(updated)
-//                            editingNote = null
-//                        } else {
-//                            // INSERT
-//                            viewModel.insertNote(Note(uuid4().toString(), title, description))
-//                        }
-//                        title = ""
-//                        description = ""
-//                    }
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text(if (editingNote != null) "Update Note" else "Save Note")
-//        }
+        Button(
+            onClick = {
+                if (title.isNotEmpty() && description.isNotEmpty()) {
+                    scope.launch {
+                        if (editingNote != null) {
+                            // UPDATE
+                            val updated = editingNote!!.copy(title = title, description = description)
+                            viewModel.updateNote(updated)
+                            editingNote = null
+                        } else {
+                            // INSERT
+                            viewModel.insertNote(Note(uuid4().toString(), title, description))
+                        }
+                        title = ""
+                        description = ""
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (editingNote != null) "Update Note" else "Save Note")
+        }
 
         Spacer(Modifier.height(16.dp))
 
