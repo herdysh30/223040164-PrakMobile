@@ -57,7 +57,11 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
 
     fun updateNote(note: Note) {
         viewModelScope.launch {
-            noteDao.updateNote(note)
+           noteRepository.update(note.id, note, onSuccess = {
+               Log.d("NoteViewModel", "update note success")
+           }, onError = {
+               Log.d("NoteViewModel", it)
+           })
         }
     }
 
