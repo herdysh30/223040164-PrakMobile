@@ -19,18 +19,22 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class NoteViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
-    private val _loadList : MutableLiveData<Boolean> = MutableLiveData(false)
-    val list : LiveData<List<Note>> = _loadList.switchMap {
-        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-            emitSource(
-                noteRepository.loadItems(
-                    onSuccess = {
-                        Log.d("NoteViewModel", "load list success")
-                    },
-                    onError = {
-                        Log.d("NoteViewModel", it)
-                    }
-                ).asLiveData()
+
+    val list: LiveData<List<Note>> = noteRepository.getLiveNotes()
+
+    init {
+        refreshNotesFromApi()
+    }
+
+    private fun refreshNotesFromApi() {
+        viewModelScope.launch {
+            noteRepository.refreshNotes(
+                onSuccess = {
+                    Log.d("NoteViewModel", "refresh notes success")
+                },
+                onError = {
+                    Log.d("NoteViewModel", it)
+                }
             )
         }
     }
@@ -39,13 +43,13 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
         viewModelScope.launch {
             noteRepository.insert(note, onSuccess = {
                 Log.d("NoteViewModel", "insert note success")
-                }, onError = {
+            }, onError = {
                 Log.d("NoteViewModel", it)
             })
         }
     }
 
-    fun deleteNote(note: Note){
+    fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteRepository.delete(note.id, onSuccess = {
                 Log.d("NoteViewModel", "delete note success")
@@ -57,12 +61,11 @@ class NoteViewModel @Inject constructor(private val noteRepository: NoteReposito
 
     fun updateNote(note: Note) {
         viewModelScope.launch {
-           noteRepository.update(note.id, note, onSuccess = {
-               Log.d("NoteViewModel", "update note success")
-           }, onError = {
-               Log.d("NoteViewModel", it)
-           })
+            noteRepository.update(note.id, note, onSuccess = {
+                Log.d("NoteViewModel", "update note success")
+            }, onError = {
+                Log.d("NoteViewModel", it)
+            })
         }
     }
-
 }

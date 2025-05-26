@@ -1,6 +1,7 @@
 package com.example.mynote.repositories
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import com.skydoves.sandwich.suspendOnSuccess
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
@@ -25,28 +26,23 @@ class NoteRepository @Inject constructor(
     ) = flow {
         val list: List<Note> = dao.getAllNotes()
         api.all()
-            //handle the case when the API request gets a success response
             .suspendOnSuccess {
-                data.whatIfNotNull {
-                    dao.insertNotes(list)
-                    emit(list)
+                data.whatIfNotNull { response ->
+                    dao.insertNotes(response.data)
+                    emit(dao.getAllNotes())
                     onSuccess()
                 }
             }
-            // handle the case when the API request gets an error response
-            // e.g. internal server error
             .suspendOnError {
                 onError(message())
                 emit(list)
             }
-            //handle the case when the API request gets an exception response
-            //e.g network connection error.
             .suspendOnException {
                 onError(message())
                 emit(list)
             }
-
     }.flowOn(Dispatchers.IO)
+
 
     suspend fun insert(item: Note, onSuccess: () -> Unit, onError: (String) -> Unit){
         api.insert(item)
@@ -89,4 +85,24 @@ class NoteRepository @Inject constructor(
                 onError(message())
             }
     }
+
+    fun getLiveNotes(): LiveData<List<Note>> = dao.getAllNotesLive()
+
+    @WorkerThread
+    suspend fun refreshNotes(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        api.all()
+            .suspendOnSuccess {
+                data.whatIfNotNull { response ->
+                    dao.insertNotes(response.data)
+                    onSuccess()
+                }
+            }
+            .suspendOnError {
+                onError(message())
+            }
+            .suspendOnException {
+                onError(message())
+            }
+    }
+
 }

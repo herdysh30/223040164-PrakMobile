@@ -13,7 +13,10 @@ import com.example.mynote.models.Note
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM notes")
-    fun getAllNotes(): List<Note>
+    fun getAllNotesLive(): LiveData<List<Note>>
+
+    @Query("SELECT * FROM notes")
+    suspend fun getAllNotes(): List<Note>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: Note)
