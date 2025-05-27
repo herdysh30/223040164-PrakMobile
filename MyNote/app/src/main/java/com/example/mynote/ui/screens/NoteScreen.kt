@@ -1,4 +1,4 @@
-package com.example.mynote
+package com.example.mynote.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,17 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LiveData
 import com.benasher44.uuid.uuid4
 import com.example.mynote.models.Note
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import kotlinx.coroutines.launch
 
+@Destination<RootGraph>
 @Composable
-fun NoteScreen(modifier: Modifier) {
+fun NoteScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<NoteViewModel>()
     val notes: List<Note> by viewModel.list.observeAsState(initial = listOf())
 
@@ -156,4 +156,5 @@ fun NoteScreen(modifier: Modifier) {
             }
         }
     }
+    viewModel.updateToken()
 }

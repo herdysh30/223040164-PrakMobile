@@ -76,4 +76,8 @@ dependencies {
     implementation(libs.skydoves.sandwich)
     implementation(libs.skydoves.whatif)
     implementation(libs.retrofit.converter.gson)
+    implementation(libs.compose.destination.core)
+    ksp(libs.compose.destination.ksp)
+    implementation(libs.datastore.preferences)
+
 }

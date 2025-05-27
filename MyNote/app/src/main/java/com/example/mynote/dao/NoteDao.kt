@@ -13,9 +13,6 @@ import com.example.mynote.models.Note
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM notes")
-    fun getAllNotesLive(): LiveData<List<Note>>
-
-    @Query("SELECT * FROM notes")
     suspend fun getAllNotes(): List<Note>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -27,9 +24,11 @@ interface NoteDao {
     @Delete
     suspend fun deleteNote(note: Note)
 
+    @Query("DELETE FROM notes WHERE id = :id")
+    suspend fun deleteNote(id: String)
+
     @Update
     suspend fun updateNote(note: Note)
 
-    @Query("DELETE FROM notes WHERE id = :id")
-    suspend fun deleteNote(id: String)
+
 }

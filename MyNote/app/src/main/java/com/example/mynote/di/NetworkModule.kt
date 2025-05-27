@@ -1,5 +1,6 @@
 package com.example.mynote.di
 
+import com.example.mynote.networks.LoginApi
 import com.example.mynote.networks.NoteApi
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
@@ -39,5 +40,11 @@ object NetworkModule {
     @Singleton
     fun provideNoteApi(retrofit: Retrofit): NoteApi {
         return retrofit.create(NoteApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginApi(retrofit: Retrofit): LoginApi {
+        return retrofit.create(LoginApi::class.java)
     }
 }
